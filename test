@@ -1,0 +1,373 @@
+const express = require("express");
+const createError = require('http-errors');
+const bodyparser = require('body-parser')
+const app = express();
+const nodemailer = require('nodemailer');
+const cors = require('cors');
+const mysql = require("mysql2");
+const { json } = require("body-parser");
+const path = require("path");
+const fetch = require('node-fetch');
+const { stringify } = require('querystring');
+const bcrypt = require('bcryptjs');
+// const routes = require('./routes');
+app.use(express.json());
+// app.use(routes);
+const db = require('./dbConnection');
+const jwt = require('jsonwebtoken');
+app.use(bodyparser.json());
+
+app.use(bodyparser.urlencoded({
+  extended: true
+}));
+
+app.use(cors());
+
+const stripe = require('stripe')('sk_test_51IFCZMCgALYZd2y9gmZqhmTIOcQYaWbR5JX7IDwhtpdVGueF7McgGw5Z07SJpxN34SDFhWq2LHOOpRbPQlB0430z00dIW4JhLY');
+ 
+
+
+// Handling Errors
+app.use((err, req, res, next) => {
+  // console.log(err);
+  err.statusCode = err.statusCode || 500;
+  err.message = err.message || "Internal Server Error";
+  res.status(err.statusCode).json({
+    message: err.message,
+  });
+});
+
+
+// Handling Errors
+app.use((err, req, res, next) => {
+  // console.log(err);
+  err.statusCode = err.statusCode || 500;
+  err.message = err.message || "Internal Server Error";
+  res.status(err.statusCode).json({
+    message: err.message,
+  });
+});
+
+// creat a new Record nationality: "",
+
+app.post("/insertdata", (req, res) => {
+  let data = { firstname: req.body.firstname_individual, lastname: req.body.lastname_individual, salution: req.body.salution_individual, email: req.body.email_individual, address: req.body.address_individual, state: req.body.state_individual, telephone_no: req.body.telephone_no_individual, mobile_no: req.body.mobile_no_individual, nationality: req.body.nationality_individual, industry: req.body.industry_individual, user_type: req.body.user_type_individual };
+  let sql = "INSERT INTO registration SET ?";
+
+  let query = db.query(sql, data, (err, result) => {
+    if (err) throw err;
+    res.send(JSON.stringify({ status: 200, error: null, response: result }));
+  });
+});
+
+app.put("/updatePassword/:userid", (req, res) => {
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+  console.log(password, confirmPassword);
+  var id = req.params.userid;
+
+
+  var id = req.params.userid;
+  const passwordHash = bcrypt.hashSync('password', 10);
+  db.query('UPDATE registration set   password = ? where user_id = ?', [passwordHash, id], function (err, result) {
+    //    res.end(JSON.stringify(result));
+    if (err) throw err;
+    res.send(JSON.stringify({ status: 200, error: null, response: result }));
+  });
+});
+
+app.put("/forgotPassword", (req, res) => {
+  const password = req.body.password;
+  const email = req.body.email;
+  const confirmPassword = req.body.confirmPassword;
+  console.log(password, confirmPassword);
+  
+  
+  const passwordHash = bcrypt.hashSync('password', 10);
+  db.query('UPDATE registration set   password = ? where email = ?', [passwordHash, email], function (err, result) {
+    //    res.end(JSON.stringify(result));
+    if (err) throw err;
+    res.send(JSON.stringify({ status: 200, error: null, response: result }));
+  });
+});
+
+
+
+
+// creat a new Record
+app.post("/createdata", (req, res) => {
+  let data = { firstname: req.body.firstname, lastname: req.body.lastname, salution: req.body.salution, email: req.body.email, address: req.body.address, state: req.body.state, telephone_no: req.body.telephone_no, mobile_no: req.body.mobile_no, nationality: req.body.nationality, industry: req.body.industry ,user_type: req.body.user_type};
+  let sql = "INSERT INTO registration SET ?";
+  let query = db.query(sql, data, (err, result) => {
+    if (err) throw err;
+    res.send(JSON.stringify({ status: 200, error: null, response: result }));
+
+    let id = result.insertId;
+
+    // declare vars
+    let fromMail = 'techdiligents@gmail.com';
+    let toMail = req.body.email;
+
+
+
+    // let toMail = 'gnbaviskar2@gmail.com,gnbaviskar3@gmail.com';
+
+    let subject = 'An email using nodejs app';
+    let text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book http://localhost:3000/password/" + id;
+
+    // auth
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'techdiligents@gmail.com',
+        pass: 'techdiligents@$567',
+      }
+    });
+
+    // email options
+    let mailOptions = {
+      from: fromMail,
+      to: toMail,
+      subject: subject,
+      text: text
+    };
+
+    // send email
+    transporter.sendMail(mailOptions, (error, response) => {
+      if (error) {
+        console.log(error);
+      }
+      console.log(response)
+    });
+  });
+});
+
+// creat a new Record
+app.post("/guestlogin", (req, res) => {
+  let data = { firstname: req.body.firstname, lastname: req.body.lastname, salution: req.body.salution, email: req.body.email, address: req.body.address, state: req.body.state, telephone_no: req.body.telephone_no, mobile_no: req.body.mobile_no, nationality: req.body.nationality, industry: req.body.industry ,user_type: req.body.user_type };
+  let sql = "INSERT INTO registration SET ?";
+  let query = db.query(sql, data, (err, result) => {
+    if (err) throw err;
+    res.send(JSON.stringify({ status: 200, error: null, response: result }));
+
+  });
+});
+////Recaptcha
+app.post('/subscribe', async (req, res) => {
+
+  if (!req.body.value)
+    return res.json({ success: false, msg: 'Please select captcha' });
+
+  // Secret key
+  const secretKey = '6Lc47T0dAAAAADHxviZhk1245yWHXDUJJ82btXCN';
+
+  // Verify URL
+  const query = stringify({
+    secret: secretKey,
+    response: req.body.value
+
+  });
+  const verifyURL = `https://google.com/recaptcha/api/siteverify?${query}`;
+
+  // Make a request to verifyURL
+  const body = await fetch(verifyURL).then(res => res.json());
+
+  // If not successful
+  if (body.success !== undefined && !body.success)
+    return res.json({ success: false, msg: 'Failed captcha verification' });
+
+  // If successful
+  return res.json({ success: true, msg: 'Captcha passed' });
+});
+
+
+
+var otp = "";
+
+app.post("/emailsend", (req, res) => {
+
+  otp = Math.random();
+  otp = otp * 1000000;
+  otp = parseInt(otp);
+  console.log(otp);
+  
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: false,
+    service: 'Gmail',
+  
+    auth: {
+      user: 'techdiligents@gmail.com',
+      pass: 'techdiligents@$567',
+    }
+  
+  });
+  email = req.body.email;
+
+  // send mail with defined transport object
+  var mailOptions = {
+    to: req.body.email,
+    subject: "Otp for registration is: ",
+    html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+    res.send('otp');
+  });
+});
+
+app.post('/verify', function (req, res) {
+    console.log(req.body.otp);
+    console.log(otp);
+  if (req.body.otp == otp) {
+      res.send("You has been successfully registered");
+  }
+  else {
+      res.send('otp is incorrect' );
+  }
+});
+
+app.post('/resend', function (req, res) {
+  var mailOptions = {
+    to: email,
+    subject: "Otp for registration is: ",
+    html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>" // html body
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    res.render('otp', { msg: "otp has been sent" });
+  });
+
+})
+
+
+const { check } = require('express-validator');
+
+
+
+app.post('/login', (req, res, next) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  if (req.body.otp == otp) {
+  
+  db.query(
+    `SELECT * FROM registration WHERE email = ${db.escape(req.body.email)};`,
+    (err, result) => {
+      // user does not exists
+      if (err) {
+        throw err;
+        return res.status(400).send({
+          msg: err
+        });
+      }
+      console.log(result)
+      if (!result.length) {
+        return res.status(401).send({
+          msg: 'Email or new password is incorrect!'
+        });
+      }
+
+
+      bcrypt.hash(req.body.password, 10, function (err, hash) {
+        if (err) { throw (err); }
+
+        bcrypt.compare(result[0].password, hash, function (err, result) {
+          if (err) { throw (err); }
+          console.log(result);
+        });
+      });
+
+
+      const theToken = jwt.sign({ id: result[0].id }, 'the-super-strong-secrect', { expiresIn: '1h' });
+
+      return res.json({
+        token: theToken
+      });
+
+    });
+   }
+  
+    else {
+      res.send("otp  is not verifired");
+    }
+});
+app.post('/pay', async (request, response) => {
+  try {
+    // Create the PaymentIntent
+    let intent = await stripe.paymentIntents.create({
+      payment_method: request.body.payment_method_id,
+      description: "Test payment",
+      amount: request.body.amount * 100,
+      currency: 'inr',
+      confirmation_method: 'manual',
+      confirm: true
+    });
+    // Send the response to the client
+    response.send(generateResponse(intent));
+  } catch (e) {
+    // Display error on client
+    return response.send({ error: e.message });
+  }
+});
+ 
+const generateResponse = (intent) => {
+  if (intent.status === 'succeeded') {
+    // The payment didn’t need any additional actions and completed!
+    // Handle post-payment fulfillment
+    return {
+      success: true
+    };
+  } else {
+    // Invalid status
+    return {
+      error: 'Invalid PaymentIntent status'
+    };
+  }
+};
+ 
+// request handlers
+app.get('/', (req, res) => {
+  res.send('Stripe Integration! - Clue Mediator');
+});
+
+app.get('/getData', function (req, res) {
+  console.log(req);
+  db.query('select * from subscription_type', function (error, results, fields) {
+   if (error) throw error;
+   res.end(JSON.stringify(results));
+ });
+});
+
+app.get('/edit/:id',(req, res) => {
+  const id = req.params.id;
+  let sql = `Select * from subscription_type where id = ${id}`;
+  let query = db.query(sql,(err, result) => {
+      if(err) throw err;
+      res.end(JSON.stringify(result));
+  });
+});
+
+
+app.listen(5000, () => {
+  console.log("server started on port 5000...");
+});
+
+
+
+
+
+
+
+

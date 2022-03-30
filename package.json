@@ -1,0 +1,42 @@
+{
+  "name": "creditapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "homepage":"",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hookform/resolvers": "^2.8.5",
+    "alipay-nodejs": "0.0.13",
+    "alipay-sdk": "^3.1.7",
+    "bcryptjs": "^2.4.3",
+    "buildpack": "0.0.1",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.13.0",
+    "filereader": "^0.10.3",
+    "fs": "0.0.1-security",
+    "fs-extra": "^10.0.0",
+    "isomorphic-fetch": "^3.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.4",
+    "mysql2": "^2.3.3",
+    "node-fetch": "^2.6.0",
+    "node-modules": "^1.0.1",
+    "nodemailer": "^6.7.1",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7",
+    "querystring": "^0.2.1",
+    "react-hook-form": "^7.24.0",
+    "read-file": "^0.2.0",
+    "router": "^1.3.6",
+    "stripe": "^8.191.0"
+  }
+}

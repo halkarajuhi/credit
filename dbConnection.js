@@ -2,10 +2,11 @@ const mysql = require("mysql2");
 
 const db_connection = mysql
   .createConnection({
-    host: "localhost", // HOST NAME
-    user: "root", // USER NAME
-    database: "creditcheck", // DATABASE NAME
-    password: "", // DATABASE PASSWORD
+    host: "51.79.140.122", // HOST NAME
+    user: "credo", // USER NAME
+    database: "db_credo", // DATABASE NAME
+    password: "TrxTrx@88", // DATABASE PASSWORD
+    Port:"83",
   })
   .on("error", (err) => {
     console.log("Failed to connect to Database - ", err);

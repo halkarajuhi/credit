@@ -41,7 +41,7 @@ app.get('/*', function(req, res) {
   })
 })
 }
-consolie.log(__dirname)
+console.log(__dirname)
 
 
 // Handling Errors

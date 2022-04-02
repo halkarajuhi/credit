@@ -16,7 +16,7 @@ router.post("/emailsend", (req, res) => {
   otp = parseInt(otp);
 
   db.query(
-    `SELECT * FROM registration WHERE email = ${db.escape(req.body.email)};`,
+    `SELECT * FROM registration WHERE email = ${db.escape(req.body.email)}`,
     (err, result) => {
       // user does not exists
       if (err) {

@@ -29,7 +29,7 @@ const { check } = require('express-validator');
 if (process.env.NODE_ENV === 'production') {
 
   // Serve any static files
- app.use(express.static('public'));
+ app.use(express.static('build'));
   
 
 }

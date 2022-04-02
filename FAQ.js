@@ -20,7 +20,7 @@ router.post("/addfaq", (req, res) => {
     });
   });
 
-  router.get('../getallfaqdata', (req, res) => {
+  router.get('./getallfaqdata', (req, res) => {
 
     let sql = 'Select * from question_type';
     let query = db.query(sql, (err, result) => {

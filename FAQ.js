@@ -27,6 +27,7 @@ router.post("/addfaq", (req, res) => {
       if (err) throw err;
       res.end(JSON.stringify({response : result}));
     });
+       db.end();
   });
 
    router.get('/getsingledata/:id', (req, res) => {

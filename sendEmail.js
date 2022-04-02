@@ -9,7 +9,7 @@ var otp = "";
 
 
 
-router.post("/credit-check-1/emailsend", (req, res) => {
+router.post("/emailsend", (req, res) => {
 
   otp = Math.random();
   otp = otp * 1000000;

@@ -70,14 +70,13 @@ var admin_profile = require('./admin_profile.js');
 var admin_login= require('./admin/admin_login.js');
 var report = require('./admin/report.js');
 
-
+app.use(express.static('public_html'));
 app.use('/Faq', Faq);
 app.use('/aboutus', aboutus);
 app.use('/users', users);
 app.use('/chat', chat);
 app.use('/alipaytrial', alipaytrial);
 app.use('/wechatpay', wechatpay);
-app.use(express.static('public_html'));
 app.use('/registration', registration);
 app.use('/Recaptcha', Recaptcha);
 app.use('/sendEmail', sendEmail);

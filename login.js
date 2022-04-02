@@ -128,8 +128,10 @@ router.post("/guestlogin", (req, res) => {
   let query = db.query(sql, data, (err, result) => {
     if (err) throw err;
     res.send(JSON.stringify({ response: result.insertId }));
-
+    
   });
+  
+  db.end();
 });
 
 router.put("/resetPassword/:email", (req, res) => {

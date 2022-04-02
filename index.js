@@ -26,17 +26,7 @@ const port = process.env.PORT || 8080;
 
 app.use(cors());
 const { check } = require('express-validator');
-if (process.env.NODE_ENV === 'production') {
 
- // Serve any static files
-   app.use(express.static(path.join(__dirname, 'build')));
-    
-  // Handle React routing, return all requests to React app
-  app.get('/*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  });
-
-}
 
 
 // Handling Errors
@@ -90,6 +80,18 @@ app.use('/admin_profile', admin_profile);
 app.use('/admin_login', admin_login);
 app.use('/report', report);
 
+
+if (process.env.NODE_ENV === 'production') {
+
+ // Serve any static files
+   app.use(express.static(path.join(__dirname, 'build')));
+    
+  // Handle React routing, return all requests to React app
+  app.get('/*', function(req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+
+}
 
 
 app.listen(port, () => {

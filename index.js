@@ -21,7 +21,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({
   extended: true
 }));
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8000;
 
 
 app.use(cors());
@@ -29,10 +29,10 @@ const { check } = require('express-validator');
 if (process.env.NODE_ENV === 'production') {
 
   // Serve any static files
-   app.use(express.static(path.join(__dirname)));
+   app.use(express.static(path.join(__dirname,'build')));
   
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, "build/index.html"));
 });
 }
 

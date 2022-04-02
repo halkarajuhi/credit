@@ -21,7 +21,9 @@ router.post("/addfaq", (req, res) => {
   });
 
   router.get('/getallfaqdata', (req, res) => {
-  
+  return res.send({
+          error_msg: 'Something went wrong'
+        });
     let sql = 'Select * from question_type';
     let query = db.query(sql, (err, result) => {
       if (err) throw err;

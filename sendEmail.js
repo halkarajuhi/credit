@@ -19,7 +19,12 @@ router.post("/emailsend", (req, res) => {
     `SELECT * FROM registration WHERE email = ${db.escape(req.body.email)}`,
     (err, result) => {
       // user does not exists
-     
+     if (err) {
+        return res.send({
+          error_msg: 'Something went wrong'
+        });
+      }
+
 
       if (!result.length) {
         return res.send(JSON.stringify({ status: 500, error: true, error_msg: 'Register first!' }));

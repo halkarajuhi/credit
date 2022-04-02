@@ -1,5 +1,5 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('./dbConnection');
 
@@ -21,7 +21,6 @@ router.post("/addfaq", (req, res) => {
   });
 
   router.get('getallfaqdata', (req, res) => {
-
     let sql = 'Select * from question_type';
     let query = db.query(sql, (err, result) => {
       if (err) throw err;

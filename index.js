@@ -29,9 +29,9 @@ const { check } = require('express-validator');
 if (process.env.NODE_ENV === 'production') {
 
   // Serve any static files
-   app.use(express.static(path.join(__dirname,'build')));
+   app.use(express.static(path.join(__dirname,'build/')));
   
-app.get('/*', (req, res) => {
+app.get('/**', (req, res) => {
   res.sendFile(path.join(__dirname, "build/index.html"));
 });
 }

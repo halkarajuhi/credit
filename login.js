@@ -123,7 +123,7 @@ router.put("/forgotPassword/:uniquekey", (req, res) => {
 
 // creat a new Record
 router.post("/guestlogin", (req, res) => {
-  let data = { firstname: req.body.firstname, lastname: req.body.lastname, salution: req.body.salution, email: req.body.email, address: req.body.address, state: req.body.state, telephone_no: req.body.telephone_no, mobile_no: req.body.mobile_no, nationality: req.body.nationality, industry: req.body.industry, user_type: req.body.user_type };
+  let data = {user_type: req.body.user_type };
   let sql = "INSERT INTO registration SET ?";
   let query = db.query(sql, data, (err, result) => {
     if (err) throw err;

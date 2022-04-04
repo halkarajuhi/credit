@@ -11,32 +11,15 @@ const { encrypt, decrypt } = require('./encryptdata');
 
 const mysql = require("mysql2");
 
-const db = mysql
-  .createConnection({
-    host: "51.79.140.122", // HOST NAME
-    user: "credo", // USER NAME
-    database: "db_credo", // DATABASE NAME
-    password: "TrxTrx@88", // DATABASE PASSWOR
-    port:"3306",
-    
-  })
-  .on("error", (err) => {
-    console.log("Failed to connect to Database - ", err);
-  });
-
-
 router.put("/updatePassword/:encryptedData", (req, res) => {
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
   var encryptedid = req.params.encryptedData;
   const passwordHash = bcrypt.hashSync(password, 10);
 
-
-
   let sql = 'Select * from registration where encryptedData ="' + encryptedid + '"';
   let query = db.query(sql, (err, result) => {
     if (err) throw err;
-
 
     if (result != '') {
       var newemail = result[0]['email'];
@@ -73,13 +56,7 @@ router.put("/updatePassword/:encryptedData", (req, res) => {
         });
         res.send(JSON.stringify({ status: 200, success: true, response: result2 }));
 
-
-        console.log(query.sql);
-
-        console.log(querya1.sql);
       });
-
-
 
     }
     else {
@@ -88,7 +65,6 @@ router.put("/updatePassword/:encryptedData", (req, res) => {
     }
 
   });
-
 
 });
 
@@ -147,7 +123,7 @@ router.post("/guestlogin", (req, res) => {
     
   });
   
-  db.end();
+
 });
 
 router.put("/resetPassword/:email", (req, res) => {

@@ -7,7 +7,7 @@ const db_connection = mysql
     database: "db_credo", // DATABASE NAME
     password: "TrxTrx@88", // DATABASE PASSWOR
     port:"3306",
-    ssl:true,
+    
   })
   .on("error", (err) => {
     console.log("Failed to connect to Database - ", err);

@@ -4,10 +4,25 @@ const path = require("path");
 const fetch = require('node-fetch');
 const { stringify } = require('querystring');
 const bcrypt = require('bcryptjs');
-const db = require('./dbConnection');
+//const db = require('./dbConnection');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const { encrypt, decrypt } = require('./encryptdata');
+
+const mysql = require("mysql2");
+
+const db = mysql
+  .createConnection({
+    host: "51.79.140.122", // HOST NAME
+    user: "credo", // USER NAME
+    database: "db_credo", // DATABASE NAME
+    password: "TrxTrx@88", // DATABASE PASSWOR
+    port:"3306",
+    
+  })
+  .on("error", (err) => {
+    console.log("Failed to connect to Database - ", err);
+  });
 
 
 router.put("/updatePassword/:encryptedData", (req, res) => {
